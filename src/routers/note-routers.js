@@ -5,9 +5,7 @@ const Note = require('../models/note.js')
 const router = new express.Router()
 
 router.post('/notes', async (req, res) => {
-    const note = new Note({
-        ...req.body
-    })
+    const note = new Note(req.body)
     try {
         await note.save()
         res.status(201).send(note)
