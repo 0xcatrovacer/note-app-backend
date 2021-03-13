@@ -44,15 +44,20 @@ router.post('/users/logout', auth, async (req, res) => {
     }
 })
 
-// Get User by id
-router.get('/users/:id', async (req, res) => {
-    const id = req.params.id
+// Get User Details
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
+})
+
+//Delete User
+router.delete('/users/delete', auth, async (req, res) => {
     try {
-        const user = await User.findById(id);
-        res.send(user)
+        await req.user.remove()
+        res.send(req.user)
     } catch (e) {
-        res.status(500).send(e)
+        res.status(500).send()
     }
 })
+
 
 module.exports = router
