@@ -1,11 +1,15 @@
 const express = require('express')
 
 const Note = require('../models/note.js')
+const auth = require('../middlewares/auth')
 
 const router = new express.Router()
 
-router.post('/notes', async (req, res) => {
-    const note = new Note(req.body)
+router.post('/notes', auth, async (req, res) => {
+    const note = new Note({
+        ...req.body,
+        owner: req.user._id
+    })
     try {
         await note.save()
         res.status(201).send(note)
@@ -14,7 +18,7 @@ router.post('/notes', async (req, res) => {
     }
 })
 
-router.get('/notes', async (req, res) => {
+router.get('/notes', auth, async (req, res) => {
     try {
         const note = await Note.find()
 
@@ -28,7 +32,7 @@ router.get('/notes', async (req, res) => {
     }
 })
 
-router.delete('/notes/:id', async (req, res) => {
+router.delete('/notes/:id', auth, async (req, res) => {
     try {
         const note = await Note.findOneAndDelete({ _id: req.params.id })
 

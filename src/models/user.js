@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const Note = require('./note.js')
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -23,6 +25,12 @@ const userSchema = new mongoose.Schema({
     }]
 }, {
     timestamps: true
+})
+
+userSchema.virtual('notes', {
+    ref: 'Note',
+    localField: '_id',
+    foreignField: 'owner'
 })
 
 userSchema.methods.toJSON = function () {
@@ -69,7 +77,12 @@ userSchema.pre('save', async function (next) {
     }
 
     next()
+})
 
+userSchema.pre('remove', async function (next) {
+    const user = this
+    await Note.deleteMany({ owner: user._id })
+    next()
 })
 
 const User = mongoose.model('User', userSchema)
