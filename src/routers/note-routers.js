@@ -28,4 +28,18 @@ router.get('/notes', async (req, res) => {
     }
 })
 
+router.delete('/notes/:id', async (req, res) => {
+    try {
+        const note = await Note.findOneAndDelete({ _id: req.params.id })
+
+        if (!note) {
+            return res.status(404).send()
+        }
+        res.send()
+
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 module.exports = router
