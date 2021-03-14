@@ -20,12 +20,11 @@ router.post('/notes', auth, async (req, res) => {
 
 router.get('/notes', auth, async (req, res) => {
     try {
-        const note = await Note.find()
+        const note = await req.user.populate({
+            path: 'notes'
+        }).execPopulate()
 
-        if (!note) {
-            return res.status(404).send()
-        }
-        res.send(note)
+        res.status(200).send(req.user.notes)
 
     } catch (e) {
         res.status(500).send(e)
