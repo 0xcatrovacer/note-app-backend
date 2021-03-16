@@ -31,6 +31,19 @@ router.get('/notes', auth, async (req, res) => {
     }
 })
 
+router.get('/notes/:id', auth, async (req, res) => {
+    try {
+        const note = await Note.findById({ _id: req.params.id })
+        if (!note) {
+            return res.status(404).send()
+        }
+        res.send(note)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+
 router.delete('/notes/:id', auth, async (req, res) => {
     try {
         const note = await Note.findOneAndDelete({ _id: req.params.id })
