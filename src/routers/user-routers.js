@@ -46,7 +46,7 @@ router.post('/users/logout', auth, async (req, res) => {
 
 // Get User Details
 router.get('/users/me', auth, async (req, res) => {
-    res.send(user)
+    res.send(req.user)
 })
 
 //Delete User
