@@ -30,18 +30,14 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.username, req.body.password)
-        try {
-            const token = await user.generateAuthToken()
-            res.status(200).send({ user, token })
-        } catch (e) {
-            if (user.password !== req.body.password) {
-                res.status(500).send({ message: 'Passwords do not match!' })
-            } else {
-                res.status(500).send({ message: 'Something went wrong' })
-            }
-        }
+        const token = await user.generateAuthToken()
+        res.status(200).send({ user, token })
     } catch (e) {
-        console.log(e)
+        if (e.password !== req.body.password) {
+            res.status(500).send({ message: 'Passwords do not match!' })
+        } else {
+            res.status(500).send({ message: 'Something went wrong' })
+        }
     }
 })
 
@@ -53,7 +49,7 @@ router.post('/users/logout', auth, async (req, res) => {
         })
         await req.user.save()
 
-        res.send('Logged Out')
+        res.send({ message: 'Logged Out' })
     } catch (e) {
         res.status(500).send(e)
     }
