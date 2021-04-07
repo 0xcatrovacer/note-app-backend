@@ -15,7 +15,14 @@ router.post('/users', async (req, res) => {
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
-        res.status(500).send(e)
+        console.log(e);
+        if (user.password.length < 8) {
+            res.status(500).send({ message: 'Password has to be minimum 8 characters' })
+        } else if (e.keyPattern.username === 1) {
+            res.status(500).send({ message: 'Username already taken!' })
+        } else {
+            res.status(500).send({ message: 'Something went wrong' })
+        }
     }
 })
 
@@ -23,10 +30,18 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.username, req.body.password)
-        const token = await user.generateAuthToken()
-        res.status(200).send({ user, token })
+        try {
+            const token = await user.generateAuthToken()
+            res.status(200).send({ user, token })
+        } catch (e) {
+            if (user.password !== req.body.password) {
+                res.status(500).send({ message: 'Passwords do not match!' })
+            } else {
+                res.status(500).send({ message: 'Something went wrong' })
+            }
+        }
     } catch (e) {
-        res.status(500).send()
+        console.log(e)
     }
 })
 
@@ -53,7 +68,7 @@ router.get('/users/me', auth, async (req, res) => {
 router.delete('/users/delete', auth, async (req, res) => {
     try {
         await req.user.remove()
-        res.send(req.user)
+        res.send({ message: 'Your account was deleted along with all your data' })
     } catch (e) {
         res.status(500).send()
     }

@@ -51,7 +51,7 @@ router.delete('/notes/:id', auth, async (req, res) => {
         if (!note) {
             return res.status(404).send()
         }
-        res.send()
+        res.send({ message: 'Note was deleted' })
 
     } catch (e) {
         res.status(500).send()
