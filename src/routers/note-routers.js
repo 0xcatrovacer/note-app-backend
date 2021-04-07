@@ -12,7 +12,7 @@ router.post('/notes', auth, async (req, res) => {
     })
     try {
         await note.save()
-        res.status(201).send(note)
+        res.status(201).send({ note, message: 'Note Saved' })
     } catch (e) {
         res.status(500).send(e)
     }

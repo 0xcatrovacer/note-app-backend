@@ -13,7 +13,7 @@ router.post('/users', async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        res.status(201).send({ user, token })
+        res.status(201).send({ user, token, message: 'New Account Created!' })
     } catch (e) {
         console.log(e);
         if (user.password.length < 8) {
@@ -33,11 +33,7 @@ router.post('/users/login', async (req, res) => {
         const token = await user.generateAuthToken()
         res.status(200).send({ user, token })
     } catch (e) {
-        if (e.password !== req.body.password) {
-            res.status(500).send({ message: 'Passwords do not match!' })
-        } else {
-            res.status(500).send({ message: 'Something went wrong' })
-        }
+        res.status(500).send({ message: 'Unable to login' })
     }
 })
 
