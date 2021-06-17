@@ -32,6 +32,10 @@ $ npm run start
 
 ---
 
+Contributions are welcome
+
+---
+
 ## Built with
 
 - [NodeJS](https://nodejs.org/en/ "NodeJS")
